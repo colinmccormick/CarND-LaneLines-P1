@@ -1,12 +1,12 @@
-**Finding Lane Lines on the Road**
+# Finding Lane Lines on the Road
+
+This project is part of the [Udacity Self-Driving Car Nanodegree program](https://github.com/udacity/CarND-LaneLines-P1).
 
 The goal of this project is to write a data pipeline to find lane lines on the road in
 individual images and video frames. The recommend approach is to use fairly standard 
 computer vision techniques, particularly the OpenCV library. My pipeline works well on
 the test images and the two primary video examples. I have not tried to improve it to work
 on the challenge video.
-
-[Original Udacity repo](https://github.com/udacity/CarND-LaneLines-P1)
 
 ### Reflection
 
@@ -32,7 +32,7 @@ is set to white (255). Third, this new image and the processed image from the pr
 step are combined with a bit-wise and, retaining the original value within the ROI and
 setting all other pixels to zero. 
 
-To create the ROI, I specified three parameters: the height, and the upper-left and 
+ To create the ROI, I specified three parameters: the height, and the upper-left and 
 upper-right positions, all as fractions of the image height and width. After playing 
 around a little, I found the pipeline worked well with a height of 0.6 (remember that y 
 increases downward, so this is below the vertical mid-point) and left/right positions of 
@@ -44,7 +44,7 @@ parameters, some of which are default in the provided helper function. The other
 the threshold, minimum length, and maximum gap for detected segments. I set these 
 empirically after some trial and error; the pipeline works well with 32,16,16.
 
-For the second/main part of the project, the pipeline needs to combine these segments 
+ For the second/main part of the project, the pipeline needs to combine these segments 
 into a full lane line. To do this, the pipeline uses the function 
 hough_lines_extended(). After detecting line segments, this function calculates the slope
 and y-intercept of each one, using the simple formula for a line, y = m*x + b. Next, it 
@@ -54,7 +54,7 @@ value of the slope and y-intercept values for left-lane and right-lane segments,
 uses this as the definition of the true/complete lane line. To draw this on the image, 
 it calculates the (x,y) points of this line at the bottom and top of the ROI.
 
-This method worked well on the first video, but had some trouble with the second video,
+ This method worked well on the first video, but had some trouble with the second video,
 where spurious non-lane lines appear on the road (particularly at 0:11). These impact
 the calculation of the mean, and lead to incorrect averages. To handle them,
 I defined a range of expected values for the slope of the true lane lines (slope_high 
@@ -66,15 +66,15 @@ with values 1.0,0.5.
 
 ### Potential shortcomings
 
-Faded/obscured lane markings. In real road conditions, we might not have such well-
+**Faded/obscured lane markings**. In real road conditions, we might not have such well-
 painted lane markings with good constrast, and the edge detection step might fail.
 
-Grayscaling. By using only the grayscaled image, I am throwing away potentially useful color
+**Grayscaling**. By using only the grayscaled image, I am throwing away potentially useful color
 information that could help identify the lane lines. I found this was fine for these 
 examples, but in more difficult conditions (e.g. shadows, curving lanes, etc) it might be 
 necessary to use color information as well.
 
-Rejecting out-of-range slopes. This hard-coded method of rejecting spurious lines by
+**Rejecting out-of-range slopes**. This hard-coded method of rejecting spurious lines by
 testing their slope might fail if the lane is curving sharply, and the true slope of a 
 lane marker falls outside the specified range. It might also fail if there are 
 spurious lines on the road from tire marks, etc. I initially tried an approach of 
@@ -82,7 +82,7 @@ calculating the median of the distribution of all slopes and rejecting any outli
 (i.e. more than 2 standard deviations away) but this fails if there is a small number
 of line segments, so I instead used this out-of-range method.
 
-Averaging slopes and intercepts. This method is most accurate when dealing with straight
+**Averaging slopes and intercepts**. This method is most accurate when dealing with straight
 roads that have lane markers lying along the same true line. That's the case for our
 current examples. However, on curved roads the lane markers would not be in a straight
 line, and averaging their slopes and intercepts would produce only a straight line, 
@@ -90,26 +90,26 @@ not the true curve. In that case we would have to use a more sophisticated appro
 
 ### Possible improvements to the pipeline
 
-Lane marker memory. In the current pipeline we process each frame independently, with 
+**Lane marker memory**. In the current pipeline we process each frame independently, with 
 no input/memory from the previous frame. That's discarding potentially useful information,
 since the real lane markers can't be too far from where they were in the previous frame. 
 We could potentially keep a running list of the lane marker positions in previous frames
 and use this to accept/reject estimates of lane marker segments in the current frame.
 
-Color processing. As noted above, we discard color information by grayscaling. We could 
+**Color processing**. As noted above, we discard color information by grayscaling. We could 
 instead implement a simple color-based method by applying the entire pipeline independently
 to each of the RGB color channels, and then average the resulting lane lines to get the
 final result. This might protect against spurious line markings, particularly if they are
 mostly one color. The drawback is increased processing complexity, and possibly reducing
 our accuracy with yellow line markers.
 
-Improved/adaptive edge detection. The pipeline relies on hard-coded thresholds for the Canny 
+**Improved/adaptive edge detection**. The pipeline relies on hard-coded thresholds for the Canny 
 edge detection. There are many improvements that can be made to the default implementation
 of the Canny method (Wikipedia has a [good summary](https://en.wikipedia.org/wiki/Otsu%27s_method)).
 These seem fairly challenging to implement, and with the current example images, the edge
 detection step doesn't seem to be a problem, so this would be low-priority.
 
-Modified image masking. The approach taken in the provided helper function works, but it seems 
+**Modified image masking**. The approach taken in the provided helper function works, but it seems 
 needlessly complex. It creates a second (zero-valued) image, fills the polygon defining 
 the lane with a white value, and then uses a bitwise-and function to retain pixel values 
 only in that region. I suspect the course designers chose this approach becaues it makes
