@@ -4,8 +4,11 @@ This project is part of the [Udacity Self-Driving Car Nanodegree program](https:
 
 The goal of this project is to write a data pipeline to find lane lines on the road in individual images and video frames. The recommended approach is to use fairly standard computer vision techniques, particularly the [OpenCV](http://opencv.org) library. My pipeline works well on the test images and the two primary video examples. I have not tried to improve it to work on the challenge video.
 
-[image1]: ./test_videos_output/solidWhiteRight.mp4 "Video"
-![alt text][image1]
+<div class="video_container">
+  <video controls="controls" allowfullscreen="true">
+    <source src="./test_videos_output/solidWhiteRight.mp4" type="video/mp4">
+  </video> 
+</div>
 
 ### Reflection
 
